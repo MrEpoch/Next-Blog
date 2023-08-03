@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email     String    @unique
+  firstName String    @db.VarChar(255)
+  lastName  String    @db.VarChar(255)
+  password  String
+  projects  Project[]
+  tasks     Task[]
+}
+
+model Project {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  belongsToId String
+  belongsTo   User   @relation(fields: [belongsToId], references: [id])
+
+  desription String?
+  due    DateTime?
+  tasks      Task[]
+  deleted    Boolean   @default(false)
+
+  @@unique([belongsToId, name])
+  @@index([belongsToId, id])
+}
+
+enum TASK_STATUS {
+  NOT_STARTED
+  STARTED
+  COMPLETED
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name   String
+  status TASK_STATUS @default(NOT_STARTED)
+
+  belongsToProjectId String
+  belongsToProject   Project @relation(fields: [belongsToProjectId], references: [id])
+  belongsToUserId    String
+  belongsToUser      User    @relation(fields: [belongsToUserId], references: [id])
+
+  description String?
+  due DateTime?
+  deleted Boolean @default(false)
+
+  @@index ([belongsToUserId])
+
+}
