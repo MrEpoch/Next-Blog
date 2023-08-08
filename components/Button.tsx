@@ -58,7 +58,13 @@ const Button: FC<ButtonProps> = ({
     intent,
     size,
     ...props
-}) => {
+}: {
+    children: React.ReactNode,  
+    className?: string,
+    intent?: "primary" | "secondary" | "text",
+    size?: "small" | "medium" | "large",
+    props?: HTMLAttributes<HTMLButtonElement>
+})=> {
     return (
        <button className={buttonClasses({ intent, size, className })} {...props}>
             {children}            
