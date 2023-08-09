@@ -4,7 +4,7 @@ import { serialize } from "cookie";
 import { createJWT } from "@/lib/auth";
 import { db } from "@/lib/db";
 
-export default async function signin(req: NextApiRequest, res: NextApiResponse) {
+export default async function login(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
         const user = await db.user.findUnique({
             where: {
@@ -26,6 +26,8 @@ export default async function signin(req: NextApiRequest, res: NextApiResponse) 
             maxAge: 60 * 60 * 24 * 7,
         })
         );
-
+        return res.status(200).json({});
+    } else {
+        res.status(402).json({});
     }
 }

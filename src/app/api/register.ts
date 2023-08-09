@@ -23,8 +23,8 @@ export default async function register(req: NextApiRequest, res: NextApiResponse
             maxAge: 60 * 60 * 24 * 7,
             })
         );
-
-
-        return res.status(200).end();
+        return res.status(200).json({});
+    } else {
+        res.status(402).json({});
     }
 }

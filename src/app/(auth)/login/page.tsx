@@ -1,8 +1,9 @@
+import AuthForm from "@/components/AuthForm";
 
 export default function Page() {
     return (
-        <div className="">
-            <h1 className="text-4xl">Hello World</h1>
+        <div>
+            <AuthForm mode="login" />
         </div>
     )
 }
