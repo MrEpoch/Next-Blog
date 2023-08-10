@@ -1,4 +1,5 @@
 export async function fetcher({ url, method, body, json = true }) {
+    try {
     const res = await fetch(url, {
         method,
         ...(body && {body: JSON.stringify(body)}),
@@ -14,7 +15,10 @@ export async function fetcher({ url, method, body, json = true }) {
 
     if (json) {
         const data = await res.json();
-        return data.data;
+        console.log(data);
+    }
+    } catch (error) {
+        console.log(error);
     }
 }
 

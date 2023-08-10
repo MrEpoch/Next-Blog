@@ -3,9 +3,7 @@ import { db } from "@/lib/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { serialize } from "cookie";
 
-export default async function register(req: NextApiRequest, res: NextApiResponse) {
-    
-    if (req.method === "POST") {
+export default async function POST(req: NextApiRequest, res: NextApiResponse) {
         const user = await db.user.create({
             data: {
                 firstName: req.body.firstName,
@@ -24,7 +22,4 @@ export default async function register(req: NextApiRequest, res: NextApiResponse
             })
         );
         return res.status(200).json({});
-    } else {
-        res.status(402).json({});
-    }
 }
