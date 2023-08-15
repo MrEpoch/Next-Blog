@@ -4,6 +4,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { db } from "./db";
 
 export async function hashPassword(password: string): Promise<string> {
+    console.log(password);
     const salt = await bcrypt.genSalt(10);
     return await bcrypt.hash(password, salt);
 }

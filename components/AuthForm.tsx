@@ -1,11 +1,10 @@
 'use client';
 
-import { useRouter } from "next/navigation";
 import Button from "./Button";
 import Card from "./Card";
 import Input from "./Input";
 import { login, register } from "@/lib/api";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 const registerContent = {
@@ -24,37 +23,10 @@ const loginContent = {
     buttonText: "Login"
 }
 
-const initial = { email: "", password: "", firstName: "", lastName: "" };
 
 export default function AuthForm({ mode }: { mode: "register" | "login" }) {
-    const router = useRouter();
 
     const [error, setError] = useState("");
-    const [formState, setFormState] = useState({...initial});
-
-    const handleSubmit = useCallback( async (e) => {
-        e.preventDefault();
-
-        try {
-
-            if (mode === "register") {
-                await register(formState);
-            } else {
-                await login(formState);
-            }
-            router.replace("/home");
-        } catch (e) {
-            setError(`Could not ${mode}`);
-        } finally {
-            setFormState({...initial});
-            router.replace("/home");
-        }
-    },[
-        formState.email,
-        formState.password,
-        formState.firstName,
-        formState.lastName,
-    ]);
 
     const content = mode === "register" ? registerContent : loginContent;
 
@@ -65,28 +37,26 @@ export default function AuthForm({ mode }: { mode: "register" | "login" }) {
                     <h2 className="text-3xl mb-2">{content.header}</h2>
                     <p className="text-lg text-black/25">{content.subHeader}</p>
                 </div>
-                <form onSubmit={handleSubmit} className="py-10 w-full">
+                <form action={mode === "register" ? register : login} className="py-10 w-full">
                     {mode === "register" && (
                         <div className="flex mb-8 justify-between">
                             <div className="pr-2">
                                 <div className="text-lg mb-4 ml-2 text-blacl/50">First Name</div>
                                 <Input
+                                    name="firstName"
                                     type="text"
                                     required
                                     className="border-solid border-2 border-gray rounded-3xl px-6 py-2 w-full"
-                                    value={formState.firstName}
-                                    onChange={(e) => setFormState({...formState, firstName: e.target.value})}
                                     placeholder="First Name"
                                 />
                             </div>
                             <div className="pr-2">
                                 <div className="text-lg mb-4 ml-2 text-blacl/50">Last Name</div>
                                 <Input
+                                    name="lastName"
                                     type="text"
                                     required
                                     className="border-solid border-2 border-gray rounded-3xl px-6 py-2 w-full"
-                                    value={formState.lastName}
-                                    onChange={(e) => setFormState({...formState, lastName: e.target.value})}
                                     placeholder="Last Name"
                                 />
                             </div>
@@ -95,22 +65,20 @@ export default function AuthForm({ mode }: { mode: "register" | "login" }) {
                     <div className="mb-8">
                             <div className="text-lg mb-4 ml-2 text-blacl/50">Email</div>
                             <Input
+                                name="email"
                                 type="email"
                                 required
                                 className="border-solid border-2 border-gray rounded-3xl px-6 py-2 w-full"
-                                value={formState.email}
-                                onChange={(e) => setFormState({...formState, email: e.target.value})}
                                 placeholder="Email"
                             />
                     </div>
                     <div className="mb-8">
                             <div className="text-lg mb-4 ml-2 text-blacl/50">Password</div>
                             <Input
+                                name="password"
                                 type="password"
                                 required
                                 className="border-solid border-2 border-gray rounded-3xl px-6 py-2 w-full"
-                                value={formState.password}
-                                onChange={(e) => setFormState({...formState, password: e.target.value})}
                                 placeholder="Password"
                             />
                     </div>

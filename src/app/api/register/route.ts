@@ -2,24 +2,8 @@ import { createJWT, hashPassword } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { serialize } from "cookie";
+import { NextResponse } from "next/server";
 
-export default async function POST(req: NextApiRequest, res: NextApiResponse) {
-        const user = await db.user.create({
-            data: {
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                email: req.body.email,
-                password: await hashPassword(req.body.password)
-            }
-        }); 
+export async function POST(req: Request, res) {
 
-        const jwt = await createJWT(user);
-
-        res.setHeader("Set-Cookie", serialize(process.env.COOKIE_NAME, jwt, {
-            httpOnly: true,
-            path: "/",
-            maxAge: 60 * 60 * 24 * 7,
-            })
-        );
-        return res.status(200).json({});
 }
