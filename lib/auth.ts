@@ -31,19 +31,24 @@ export async function validateJWT(jwt) {
         new TextEncoder().encode(process.env.JWT_SECRET)
     );
 
-    return payload.payloada as any;
+    return payload.payload as any;
 }
 
 export async function getUserFromCookie(cookies) {
-    const jwt = cookies.get(process.env.COOKIE_NAME);
-    
-    const { id } = await validateJWT(jwt);
+    try {
+        const jwt = cookies.get(process.env.COOKIE_NAME);
 
-    const user = await db.user.findUnique({
-        where: {
-            id,
-        }
-    });
+        const { id } = await validateJWT(jwt.value);
 
-    return user;
+        const user = await db.user.findUnique({
+            where: {
+                id,
+            }
+        });
+
+        return user;
+    } catch (error) {
+        console.log(error);
+        return {} as any;
+    }
 }

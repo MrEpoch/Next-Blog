@@ -4,30 +4,6 @@ import { comparePasswords, createJWT, hashPassword } from "./auth";
 import { db } from "./db";
 import { redirect } from "next/navigation";
 
-export async function fetcher({ url, method, body, json = true }) {
-    try {
-    const res = await fetch(url, {
-        method,
-        ...(body && {body: JSON.stringify(body)}),
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    })
-    
-    if (!res.ok) {
-        throw new Error('API FETCHER ERROR');
-    }
-
-    if (json) {
-        const data = await res.json();
-        console.log(data);
-    }
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 export const register = async (user: FormData) => {
     let fucking_error_happened = false;
     try {

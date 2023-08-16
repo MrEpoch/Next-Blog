@@ -16,7 +16,7 @@ export default async function middleware(req, res) {
         pathname.startsWith("/_next") ||
         pathname.startsWith("/static") ||
         pathname.startsWith("/login") ||
-        pathname.startsWith("/swapfile") ||
+        pathname.startsWith("/register") ||
         PUBLIC_FILE.test(pathname)
     ) {
         return NextResponse.next();
