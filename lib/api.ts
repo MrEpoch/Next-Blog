@@ -38,14 +38,17 @@ export const register = async (user: FormData) => {
 
 export const login = async (user: FormData) => {
     let fucking_error_happened = false;
-    try {
+    await (async () => { 
+        try {
         const user_find = await db.user.findUnique({
             where: {
                 email: user.get("email") as string,
-            }
-        });
+            }});
 
-        if (!user_find) fucking_error_happened = true;
+        console.log("web:", user.get("email"));
+        if (!user_find) return fucking_error_happened = true;
+        
+        console.log("prisma:", user_find);
 
         const passwordMatch = await comparePasswords(user.get("password") as string, user_find.password);
         
@@ -65,8 +68,9 @@ export const login = async (user: FormData) => {
         
     } catch (e) {
         console.log(e);
-        fucking_error_happened = true;
+        return fucking_error_happened = true;
     }
+    })();
     if (fucking_error_happened) return redirect("/");
     return redirect("/home");
 }
