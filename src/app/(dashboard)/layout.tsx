@@ -19,6 +19,7 @@ export default async function DashboardRootLayout({ children }: { children: Reac
                 <Sidebar />
                 {children}
             </GlassPane>
+            <div id="modal"></div>
         </div>
     )
 }

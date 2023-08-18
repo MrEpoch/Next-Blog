@@ -1,8 +1,10 @@
 'use server';
 import { cookies } from "next/headers";
-import { comparePasswords, createJWT, hashPassword } from "./auth";
+import { comparePasswords, createJWT, hashPassword, validateJWT } from "./auth";
 import { db } from "./db";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { NextResponse } from "next/server";
 
 export const register = async (user: FormData) => {
     let fucking_error_happened = false;
@@ -45,10 +47,7 @@ export const login = async (user: FormData) => {
                 email: user.get("email") as string,
             }});
 
-        console.log("web:", user.get("email"));
         if (!user_find) return fucking_error_happened = true;
-        
-        console.log("prisma:", user_find);
 
         const passwordMatch = await comparePasswords(user.get("password") as string, user_find.password);
         
@@ -73,4 +72,28 @@ export const login = async (user: FormData) => {
     })();
     if (fucking_error_happened) return redirect("/");
     return redirect("/home");
+}
+
+export const create_project = async (data) => {
+    let error = false;
+    await (async() => {
+        try {
+        const user = await validateJWT(cookies().get(process.env.COOKIE_NAME)?.value);
+        
+        if (!user) return error = true;
+
+        await db.project.create({
+            data: {
+                name: data.get("name"),
+                belongsToId: user.id
+            }
+        });
+        
+        revalidatePath("/home");
+        } catch (e) {
+            console.log(e); 
+            return error = true;
+        }
+    })()
+    return;
 }
